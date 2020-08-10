@@ -1,0 +1,21 @@
+h1 {
+    font-size: 2em;
+    font-weight: 400;
+}
+
+#current-weather-form {
+    margin: 30px;
+}
+
+#currContainer {
+    /* background-color: rgb(13, 98, 177); */
+    background-color: rgb(175, 220, 231);
+}
+
+#currentWeather {
+    /* color: white; */
+    color: black;
+    margin: 30px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
