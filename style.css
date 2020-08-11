@@ -7,6 +7,10 @@ h3 {
     font-size: 1.5em;
 }
 
+h5 {
+    margin-bottom: 20px;
+}
+
 #current-weather-form {
     margin: 30px;
 }
@@ -20,6 +24,8 @@ h3 {
 #forecastContainer {
     /* background-color: rgb(13, 98, 177); */
     background-color: rgb(117, 191, 207);
+    padding-top: 30px;
+    padding-left: 30px;
 }
 
 #currentWeather {
@@ -36,10 +42,17 @@ h3 {
     margin: 30px;
     padding-top: 30px;
     padding-bottom: 30px;
+    display: flex;
 }
 
 .forecastDivs {
     background-color: rgb(217, 234, 238);
     padding: 20px;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: -30px;
+}
+
+#historyContainer {
     margin: 20px;
 }

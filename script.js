@@ -1,17 +1,47 @@
+// SET UP
 var current = document.getElementById("currentWeather");
 var forecast = document.getElementById("forecastWeather");
+var forecastContainer = document.getElementById("forecastContainer");
+var history = document.getElementById("history");
+// localStorage.clear()
 
+$("#currContainer").hide();
+$("#forecastContainer").hide();
+
+// FILL HISTORY
+var storedPlaces = JSON.parse(localStorage.getItem("storedPlaces"));
+if (storedPlaces !== null) {
+    historyText = storedPlaces;
+    console.log(historyText);
+    var toAdd = document.createDocumentFragment();
+    for (i = 0; i < historyText.length; i++) {
+        var link = document.createElement("p");
+        link.textContent = historyText[i];
+        link.className = "history-link";
+        toAdd.appendChild(link);
+    }
+    $("#history").append(toAdd);
+}
+else {
+    historyText = [""]
+    // historyText = new Array;
+};
+
+// SEARCH BUTTON
 $("#searchCity").on("click", function(event) {
     event.preventDefault();
-
+    
     var cityName = $("#cityName").val().trim();
-
+    
+    $("#currContainer").show();
+    $("#forecastContainer").show();
     $("#currentWeather").empty();
     $("#forecastWeather").empty();
     currentWeather(cityName);
     forecastWeather(cityName);
 });
 
+// GET CURRENT WEATHER
 function currentWeather(cityName) {
     var queryURL = "http://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&appid=cc1d7110e10d9b9390a02a70dc1628f5";
     
@@ -21,23 +51,18 @@ function currentWeather(cityName) {
     }).then(function(response) {
         console.log(response);
         var srcLink = "http://openweathermap.org/img/wn/" + response.weather[0].icon + "@2x.png"
-
-        // console.log("City: " + response.name);
-        // console.log("Temperature: " + ((response.main.temp * 9 / 5 - 459.67).toFixed(1)));
-        // console.log("Humidity: " + response.main.humidity + "%");
-        // console.log("Wind Speed: " + response.wind.speed + " MPH");
-
+        
         $("<h1>" + response.name + " (" + moment().format('l') + ")" + "</h1>").appendTo(current);
         $("#currentWeather").append('<img id="weatherIcon" src="' + srcLink + '" />');
         $("<p>" + "Temperature: " + (response.main.temp * 9 / 5 - 459.67).toFixed(1) + " °F" + "</p>").appendTo(current);
         $("<p>" + "Humidity: " + response.main.humidity + "%" + "</p>").appendTo(current);
         $("<p>" + "Wind Speed: " + response.wind.speed + " MPH" + "</p>").appendTo(current);
-
+        
         var lat = response.coord.lat;
         var lon = response.coord.lon;
         var city = response.name;
         getUV(lat, lon);
-        // addtoHistory(city);
+        addtoHistory(city);
     });
     
     function getUV(lat, lon) {
@@ -47,7 +72,6 @@ function currentWeather(cityName) {
             method: "GET"
         }).then(function(response) {
             $("<p id='uv'>" + "UV Index: " + response.value + "</p>").appendTo(current);
-            // var uv = $("#uv")
             if (response.value > 8) {
                 $("#uv").css('color', 'rgb(206, 45, 45)');
             } 
@@ -59,17 +83,33 @@ function currentWeather(cityName) {
             }
         })
     }
-
-    // function addtoHistory(city) {
-    //     history.push(city);
-    //     console.log(history);
-    // }
+    
+    function addtoHistory(city) {
+        historyText.unshift(city)
+        localStorage.setItem("storedPlaces", JSON.stringify(historyText));
+        console.log(historyText)
+        
+        // create history link
+        if (storedPlaces !== null) {
+            var link = document.createElement("p");
+            link.textContent = city;
+            link.className = "history-link";
+            toAdd.appendChild(link);
+            $("#history").prepend(toAdd)
+        }
+        else {
+            var link = document.createElement("p");
+            link.textContent = city;
+            link.className = "history-link";
+            $("#history").prepend(link)
+        }
+    }
 }
 
+// GET FORECAST WEATHER
 function forecastWeather(cityName) {
     var queryURL = "http://api.openweathermap.org/data/2.5/forecast?q=" + cityName + "&appid=cc1d7110e10d9b9390a02a70dc1628f5"
-    // api.openweathermap.org/data/2.5/forecast?q={city name}&appid={your api key}
-
+    
     $.ajax({
         url: queryURL,
         method: "GET"
@@ -79,9 +119,8 @@ function forecastWeather(cityName) {
         var srcLink3 = "http://openweathermap.org/img/wn/" + response.list[2].weather[0].icon + "@2x.png"
         var srcLink4 = "http://openweathermap.org/img/wn/" + response.list[3].weather[0].icon + "@2x.png"
         var srcLink5 = "http://openweathermap.org/img/wn/" + response.list[4].weather[0].icon + "@2x.png"
-
+        
         console.log(response);
-        $("<h1>" + "5-Day Forecast" + "</h1>").appendTo(forecast);
 
         $("<div class='forecastDivs' id='plusOne'>"+"</div>").appendTo(forecast);
         var plusOne = $("#plusOne")
