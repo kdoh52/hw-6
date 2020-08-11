@@ -8,23 +8,22 @@ var history = document.getElementById("history");
 $("#currContainer").hide();
 $("#forecastContainer").hide();
 
-// FILL HISTORY
+// SET UP HISTORY
 var storedPlaces = JSON.parse(localStorage.getItem("storedPlaces"));
 if (storedPlaces !== null) {
     historyText = storedPlaces;
-    console.log(historyText);
     var toAdd = document.createDocumentFragment();
     for (i = 0; i < historyText.length; i++) {
-        var link = document.createElement("p");
+        var link = document.createElement("a");
         link.textContent = historyText[i];
-        link.className = "history-link";
+        link.setAttribute("id", "history-link");
+        link.setAttribute("class", "button secondary")
         toAdd.appendChild(link);
     }
     $("#history").append(toAdd);
 }
 else {
-    historyText = [""]
-    // historyText = new Array;
+    historyText = new Array;
 };
 
 // SEARCH BUTTON
@@ -41,6 +40,20 @@ $("#searchCity").on("click", function(event) {
     forecastWeather(cityName);
 });
 
+// HISTORY BUTTONS
+$("#history").on("click", "#history-link", function(event) {
+    event.preventDefault();
+
+    var name = $(this).context.firstChild.data;
+
+    $("#currContainer").show();
+    $("#forecastContainer").show();
+    $("#currentWeather").empty();
+    $("#forecastWeather").empty();
+    currentWeather(name);
+    forecastWeather(name);
+});
+
 // GET CURRENT WEATHER
 function currentWeather(cityName) {
     var queryURL = "http://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&appid=cc1d7110e10d9b9390a02a70dc1628f5";
@@ -49,7 +62,7 @@ function currentWeather(cityName) {
         url: queryURL,
         method: "GET"
     }).then(function(response) {
-        console.log(response);
+        // console.log(response);
         var srcLink = "http://openweathermap.org/img/wn/" + response.weather[0].icon + "@2x.png"
         
         $("<h1>" + response.name + " (" + moment().format('l') + ")" + "</h1>").appendTo(current);
@@ -85,24 +98,32 @@ function currentWeather(cityName) {
     }
     
     function addtoHistory(city) {
-        historyText.unshift(city)
-        localStorage.setItem("storedPlaces", JSON.stringify(historyText));
-        console.log(historyText)
-        
-        // create history link
-        if (storedPlaces !== null) {
-            var link = document.createElement("p");
-            link.textContent = city;
-            link.className = "history-link";
-            toAdd.appendChild(link);
-            $("#history").prepend(toAdd)
+        if (storedPlaces !== null && storedPlaces.includes(city)) {
+            return null
         }
         else {
-            var link = document.createElement("p");
-            link.textContent = city;
-            link.className = "history-link";
-            $("#history").prepend(link)
+            historyText.unshift(city)
+            localStorage.setItem("storedPlaces", JSON.stringify(historyText));
+            // console.log(historyText)
+    
+            // create history link
+            if (storedPlaces !== null) {
+                var link = document.createElement("a");
+                link.textContent = city;
+                link.setAttribute("id", "history-link");
+                link.setAttribute("class", "button secondary");
+                toAdd.appendChild(link);
+                $("#history").prepend(toAdd)
+            }
+            else {
+                var link = document.createElement("a");
+                link.textContent = city;
+                link.setAttribute("id", "history-link");
+                link.setAttribute("class", "button secondary");
+                $("#history").prepend(link)
+            }
         }
+
     }
 }
 
@@ -120,7 +141,7 @@ function forecastWeather(cityName) {
         var srcLink4 = "http://openweathermap.org/img/wn/" + response.list[3].weather[0].icon + "@2x.png"
         var srcLink5 = "http://openweathermap.org/img/wn/" + response.list[4].weather[0].icon + "@2x.png"
         
-        console.log(response);
+        // console.log(response);
 
         $("<div class='forecastDivs' id='plusOne'>"+"</div>").appendTo(forecast);
         var plusOne = $("#plusOne")
@@ -158,8 +179,3 @@ function forecastWeather(cityName) {
         $("<p>" + "Humidity: " + response.list[4].main.humidity + "%" + "</p>").appendTo(plusFive);
     });
 }
-
-// function kelvinToFahrenheit(kelvin) {
-//     var fahrenheit = kelvin * (9/5) - 459.67;
-//     return fahrenheit
-// }
