@@ -56,14 +56,14 @@ $("#history").on("click", "#history-link", function(event) {
 
 // GET CURRENT WEATHER
 function currentWeather(cityName) {
-    var queryURL = "http://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&appid=cc1d7110e10d9b9390a02a70dc1628f5";
+    var queryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&appid=cc1d7110e10d9b9390a02a70dc1628f5";
     
     $.ajax({
         url: queryURL,
         method: "GET"
     }).then(function(response) {
         // console.log(response);
-        var srcLink = "http://openweathermap.org/img/wn/" + response.weather[0].icon + "@2x.png"
+        var srcLink = "https://openweathermap.org/img/wn/" + response.weather[0].icon + "@2x.png"
         
         $("<h1>" + response.name + " (" + moment().format('l') + ")" + "</h1>").appendTo(current);
         $("#currentWeather").append('<img id="weatherIcon" src="' + srcLink + '" />');
@@ -79,7 +79,7 @@ function currentWeather(cityName) {
     });
     
     function getUV(lat, lon) {
-        var uvURL = "http://api.openweathermap.org/data/2.5/uvi?lat=" + lat + "&lon=" + lon + "&appid=cc1d7110e10d9b9390a02a70dc1628f5"
+        var uvURL = "https://api.openweathermap.org/data/2.5/uvi?lat=" + lat + "&lon=" + lon + "&appid=cc1d7110e10d9b9390a02a70dc1628f5"
         $.ajax({
             url: uvURL,
             method: "GET"
@@ -129,17 +129,17 @@ function currentWeather(cityName) {
 
 // GET FORECAST WEATHER
 function forecastWeather(cityName) {
-    var queryURL = "http://api.openweathermap.org/data/2.5/forecast?q=" + cityName + "&appid=cc1d7110e10d9b9390a02a70dc1628f5"
+    var queryURL = "https://api.openweathermap.org/data/2.5/forecast?q=" + cityName + "&appid=cc1d7110e10d9b9390a02a70dc1628f5"
     
     $.ajax({
         url: queryURL,
         method: "GET"
     }).then(function(response) {
-        var srcLink1 = "http://openweathermap.org/img/wn/" + response.list[0].weather[0].icon + "@2x.png"
-        var srcLink2 = "http://openweathermap.org/img/wn/" + response.list[1].weather[0].icon + "@2x.png"
-        var srcLink3 = "http://openweathermap.org/img/wn/" + response.list[2].weather[0].icon + "@2x.png"
-        var srcLink4 = "http://openweathermap.org/img/wn/" + response.list[3].weather[0].icon + "@2x.png"
-        var srcLink5 = "http://openweathermap.org/img/wn/" + response.list[4].weather[0].icon + "@2x.png"
+        var srcLink1 = "https://openweathermap.org/img/wn/" + response.list[0].weather[0].icon + "@2x.png"
+        var srcLink2 = "https://openweathermap.org/img/wn/" + response.list[1].weather[0].icon + "@2x.png"
+        var srcLink3 = "https://openweathermap.org/img/wn/" + response.list[2].weather[0].icon + "@2x.png"
+        var srcLink4 = "https://openweathermap.org/img/wn/" + response.list[3].weather[0].icon + "@2x.png"
+        var srcLink5 = "https://openweathermap.org/img/wn/" + response.list[4].weather[0].icon + "@2x.png"
         
         // console.log(response);
 
